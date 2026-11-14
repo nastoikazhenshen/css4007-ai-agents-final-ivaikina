@@ -20,7 +20,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: npm test
+      - run: python -m unittest discover -s tests -p 'test_openrouter.py' -v
       - run: npm run validate
         env:
           REQUIRED_WEEK: ${{ inputs.required_week }}
