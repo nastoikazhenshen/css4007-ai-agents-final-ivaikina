@@ -74,7 +74,7 @@ class OpenRouterTests(unittest.TestCase):
     def test_broken_json_response(self):
         with patch("src.openrouter_client.urlopen") as opener:
             opener.return_value.__enter__.return_value = io.BytesIO(b'{"choices":[]}')
-            with self.assertRaisesRegex(LLMError, "invalid completion"):
+            with self.assertRaisesRegex(LLMError, "no choices"):
                 self.client.complete([{"role": "user", "content": "hi"}])
 
     def test_tool_call_is_parsed_not_executed(self):
