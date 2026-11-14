@@ -1,169 +1,161 @@
 # Project Proposal — Semester Week 10
 
+> **Revision recorded on 14 November 2026:** The initial Week 10 proposal, committed on 9 November, concerned technical specification matching. The project scope was subsequently changed to tender research. This document reflects the revised proposal; it does not claim that the revised system was completed during the 2–8 November reporting window. The revision is documented in the accompanying Week 10 progress report.
+
 ## Project Title
 
-**InsulatorMatch AI — Autonomous Insulator Specification and Component Matching Agent**
+**TenderScout AI — Autonomous Power-Line Tender Research Agent**
 
 ## Problem Description
 
-A Kazakhstan-based electrical insulator manufacturer wants to respond to export inquiries from customers whose technical specifications and national or international standards differ from those used in the manufacturer's existing catalog. Export sales staff and engineers must compare requirements, locate existing products, identify gaps, and determine whether documented combinations of existing components are worth engineering review. Manual work is slow and prone to transcription and comparison errors.
+Infrastructure procurement opportunities are distributed across official government platforms and the procurement portals of electricity utilities and network operators. Announcements vary by country, language and format; critical information, such as submission dates, responsible contacts and specification documents, may be located in separate attachments or nested tender pages. Manual searches can miss relevant opportunities, retain outdated notices or record unsupported contact details.
 
-InsulatorMatch AI will assist—not replace—engineering judgment. It will extract requirements, compare them with catalog data, and suggest candidate component configurations only where documented interface and assembly rules permit consideration. It will explicitly flag missing evidence, conflicting standards, and any requirement needing calculations, testing, certification, or engineer approval. The prototype will not claim that an untested assembly is safe or compliant.
+TenderScout AI is proposed as an autonomous, evidence-grounded research agent that identifies open tenders for the **construction, reconstruction, modernization and expansion of electric power lines**. Its initial geographic scope covers **Indonesia, Thailand, Turkey, the United States, Mexico, Brazil, Argentina and Peru**. Eligible projects may involve AC or DC/HVDC systems and any voltage; no insulator mentions, material quantities or minimum voltage are required. The focus is on substantive grid infrastructure projects rather than household wiring or isolated minor repairs.
 
-**Scope:** A read-only, local-data proof of concept, initially supporting one insulator family, a small set of numeric and categorical attributes, and customer specifications in text-based PDF/CSV. The factory catalog has not yet been supplied to the project implementation; a clearly labeled synthetic dataset will be used until authorized, sanitized records are available.
+The minimum business result is **country, contracting organization, project description, official tender link, and a verified procurement-related contact/email**, plus the status and application deadline needed to confirm the opportunity is still actionable. A specification document or link is desirable but optional. Missing information must be reported explicitly; the system must not invent emails, deadlines or project details. The prototype does not submit bids or send sales emails.
+
+**Development scope:** The eight-country collector interface and common agent architecture are planned. Practical coverage depends on official access, and each source will be reported as working, partial, restricted or unverified rather than assumed complete. The educational prototype will emphasize a verifiable end-to-end multi-step agent workflow, initially using Indonesian reference notices and mock fixtures where needed.
 
 ## Target Users
 
-- Export and international B2B sales managers preparing responses to technical inquiries.
-- Technical sales engineers comparing customer and factory specifications.
-- Design and manufacturing engineers screening component configuration candidates.
-- Manufacturers of electrical insulators seeking to expand into foreign markets.
+- Tender monitoring and procurement research analysts.
+- International business-development and export sales teams.
+- Electricity infrastructure project researchers.
+- Technical sales teams who need links to optional tender specifications.
 
 ## Selected Difficulty
 
-**A — Advanced (autonomous multi-step agent).**
+A — Advanced (autonomous multi-step agent).
 
-The LLM must genuinely choose tools and next actions from intermediate observations, keep explicit task state, adapt to missing data or failures, enforce bounded execution and permissions, and produce a traceable report. A deterministic Python rules engine—not the LLM—will decide numerical and documented interface checks.
+**Target, not an implementation claim.** The LLM must genuinely select among tools, use results from previous steps, maintain an explicit research state, adapt its next action when information is missing, and stop safely under configurable limits. Python—not the model—enforces permissions, structured-output validation and objective date/status checks. A single agent is sufficient; multiple agents or a framework are not prerequisites.
 
 ## Expected Functionality
 
-1. Import text-based customer PDF/CSV specifications and sanitized local catalogs.
-2. Extract structured requirements with units, tolerances, required/optional flags, and document references.
-3. Validate and normalize comparable units without assuming equivalence between different standards.
-4. Search existing insulator products and compare each documented parameter.
-5. When no confirmed catalog match exists, search component records and evaluate *documented* assembly/interface rules.
-6. Label outcomes as **documented match**, **documented mismatch**, **insufficient evidence**, or **candidate for engineering review**; never automatically certify a new configuration.
-7. Explain mismatches and missing evidence, and ask for clarifications or change the search strategy when necessary.
-8. Generate an English Markdown comparison report with a parameter matrix, catalog identifiers, evidence, unresolved checks, and suggested next actions.
-9. Preserve an execution state and audit trace; stop on success, missing critical evidence, unrecoverable failure, or configured limits.
-10. Reject unauthorized actions, malicious document instructions, and unsupported engineering claims.
+1. Ingest public tender announcements from independent country-specific Python connectors operating on approved official sources.
+2. Normalize notices under a shared JSON contract, preserve provenance and diagnose incomplete/empty/failed source runs.
+3. Use an LLM to determine whether an announcement concerns power-line construction or reconstruction without relying only on keywords.
+4. Investigate candidate official tender pages and selectively inspect public documents.
+5. Research the official buyer and procurement contact, recording an evidence URL for each critical finding.
+6. Verify the tender's submission deadline, time zone and current status; never treat an old or unconfirmed notice as active.
+7. Maintain task state, plan and choose further actions based on actual tool observations, including missing contacts or inaccessible documents.
+8. Generate a schema-valid, source-grounded tender record with explicit unknowns and reasons.
+9. Apply deterministic routing: **Active Tenders** (verified open with future deadline and procurement email), **Pending Verification** (missing proof), **Tender History** (closed/cancelled/awarded), or **Excluded** (confirmed irrelevant).
+10. Persist a bounded execution trace, errors, intermediate evidence and stopping reason.
+11. Update Google Sheets by stable record ID without duplicates; write operations are permission-controlled and verified.
+12. Allow future country connectors to be added without changing the common agent interface.
 
 ## Proposed Functions
 
-All signatures are preliminary. Each tool will validate input schemas, allowed file paths, units, and numeric ranges.
+The interfaces are preliminary; each will be implemented with validated arguments and defined inputs/outputs.
 
-| Function | Purpose | Inputs | Expected output | Dependencies |
+| Function / signature | Purpose | Inputs | Expected output | Dependencies |
 |---|---|---|---|---|
-| `extract_requirements(file_id: str) -> dict` | Parse customer specification and record evidence | Allowlisted uploaded document ID | Validated requirement fields, units, tolerances, source locations, uncertainties | PyMuPDF, pandas, Pydantic, LLM for extraction |
-| `search_products(requirements: dict) -> list[dict]` | Retrieve relevant catalog products | Normalized requirements | Candidate product IDs and sourced catalog attributes | Local CSV/SQLite, pandas |
-| `compare_specifications(requirements: dict, product_id: str) -> dict` | Apply deterministic attribute and tolerance checks | Requirements and catalog product ID | Per-field match/mismatch/unknown matrix with reasons | Unit normalization, Python comparison rules |
-| `find_components(required_interfaces: dict) -> list[dict]` | Retrieve possible components for a missing configuration | Required part types, interface constraints | Component IDs, documented attributes, provenance | Local component catalog |
-| `evaluate_configuration(component_ids: list[str], requirements: dict) -> dict` | Check allowed combinations and identify unverified properties | Component IDs and normalized requirements | Rule checks, rejected combinations, candidate status, engineering review checklist | Explicit compatibility rules, bill-of-materials data, Python validator |
-| `generate_report(case_id: str) -> str` | Create evidence-grounded output | Existing case ID and verified task state | Markdown report path and verification status | Jinja2 or Markdown templates, local reports folder |
+| `collect_official_notices(source_id: str, since: str | None) -> dict` | Collect source announcements and technical health | Approved source ID; optional date cursor | CollectorRun JSON with notices, pagination, errors and coverage state | Python, httpx, approved source adapter |
+| `normalize_notice(raw_notice: dict) -> dict` | Standardize heterogeneous input | Collector notice | Canonical notice with original strings, normalized fields and provenance | Python, JSON Schema/Pydantic |
+| `inspect_tender(tender_url: str) -> dict` | Investigate an official tender page | Approved HTTPS notice URL | Buyer, project, publication data, links and cited evidence | Approved HTML/page fetcher |
+| `search_official_contact(tender_id: str) -> dict` | Find procurement-specific contact details | Tender ID and known official URLs | Name, verified email/contact channel, evidence URL, or unknown | Official page/document tools |
+| `inspect_document(document_url: str) -> dict` | Examine publicly accessible tender attachments | Approved document URL | Document metadata, specification link and supported excerpts | Approved downloader, PDF/DOCX parser |
+| `verify_status_and_deadline(tender_id: str) -> dict` | Re-check whether a tender is actionable | Tender ID and original source | Verified status, deadline/time zone, checked-at time, evidence | Official-source fetcher, Python datetime |
+| `run_agent(tender_id: str, goal: str) -> dict` | Orchestrate an autonomous investigation | Tender ID, research goal, available state | Result and multi-step action trace with stop reason | LLM provider, validated tool executor, state store |
+| `validate_tender(record: dict) -> dict` | Enforce schemas and publication rules | Agent output | Validation errors and routing decision | jsonschema, deterministic rules |
+| `upsert_sheets(records: list[dict]) -> dict` | Publish permitted validated results | Validated tender records | Create/update counts and verified operation result | Google Sheets API, credentials |
 
-**Data dependencies and structure (planned):**
-
-- `data/products.csv`: product_id, family, standard_id, rated_voltage_kv, creepage_distance_mm, mechanical_rating_kn, overall_height_mm, upper_interface, lower_interface, evidence_id.
-- `data/components.csv`: component_id, component_type, material, interface_code, dimensional_attributes, drawing_reference, evidence_id.
-- `data/compatibility_rules.csv`: rule_id, component_type_a, interface_a, component_type_b, interface_b, allowed_status, conditions, evidence_id.
-- `data/customer_requirements.csv`: case_id, attribute, operator, value, unit, tolerance, mandatory, source_reference.
-- `data/evidence.csv`: evidence_id, source_document, revision, page_or_section, verification_status.
-
-These columns are a *draft schema*, not actual factory specifications. Ratings for individual parts will not be added together to infer an assembly rating. Missing rules mean **unknown**, not compatible. Any novel configuration remains subject to engineering review and relevant testing.
+**Planned data model:** Source, CollectorRun, RawNotice, TenderRecord, Buyer, Contact, Document, Evidence, AgentRun, ToolAction and PublicationState. A stable notice key and history of changes will support deduplication. All significant facts will retain their original source URI and timestamp.
 
 ## Proposed Agent Tools
 
-The six functions above will be exposed as LLM-callable tools through validated schemas. Each has a distinct role:
+At least four meaningful functions will be registered with the LLM for **genuine model-selected tool calling**:
 
-1. **Requirement extraction**: obtain the actual customer constraints before comparison.
-2. **Product search**: check for an existing, documented product first.
-3. **Specification comparison**: verify measurable attributes with deterministic code.
-4. **Component search**: retrieve available candidate parts when an existing product does not fit.
-5. **Configuration evaluation**: enforce known assembly constraints and identify unresolved engineering checks.
-6. **Report generation**: publish a traceable result from verified tool outputs.
+1. **`inspect_tender`:** opens an authorized official notice to establish the project and buyer, rather than trusting a brief search snippet.
+2. **`search_official_contact`:** investigates approved official pages and attachments to find the responsible email or contact channel.
+3. **`inspect_document`:** selectively reads available PDF or other specifications when required for the research goal.
+4. **`verify_status_and_deadline`:** independently rechecks whether the submission window is still open.
 
-The model chooses tools based on state and observations, rather than following a fixed six-call script. Tools are read-only except report creation within an allowlisted output directory. There is no tool for approving a design, modifying the factory catalog, contacting a customer, or releasing production instructions.
+After each tool result, the LLM receives the observation and selects the next action. The sequence is **not hard-coded**. Internal control outcomes `finish` and `manual_review` indicate completion or safe suspension, not additional external research tools. Regular collectors, validators and Sheets synchronization are deterministic system components, not open-ended LLM permissions.
 
 ## Model Selection
 
-**Proposed:** OpenAI API model with function calling and structured outputs (final model identifier will be selected and documented during Week 11 based on availability, cost, and reliability). **Implementation:** Python 3, OpenAI Python SDK, Streamlit, pandas, PyMuPDF for text PDFs, Pydantic for validation, pytest for tests, and local CSV or SQLite storage. API credentials will be stored in environment variables, not GitHub.
+**Planned:** a model served by **OpenRouter** through an OpenAI-compatible API; the exact model will be chosen and verified during Week 11. A free-tier model is preferred for the pilot, but only if actual endpoint support for the needed tool calls, format and languages is demonstrated. Provider configuration is replaceable; a mock model adapter will be used for repeatable tests.
 
-The LLM will plan, choose tools, interpret gaps, and draft explanations; Python code will handle numeric checks and documented compatibility constraints. OCR, engineering simulation, and live standards databases are out of scope for the initial MVP.
+Planned stack: **Python 3.12**, OpenAI-compatible client with configurable base URL, httpx/HTML parser, Playwright only where permitted, jsonschema/Pydantic, pytest, SQLite for MVP state, and Google Sheets API/gspread. API credentials will be stored in environment variables and excluded from version control.
+
+**No working LLM API integration is claimed for Week 10.** Implementing and documenting the first real OpenRouter request is the Week 11 task.
 
 ## Architecture
 
-```text
-Customer PDF/CSV + local catalog/component/rule datasets
-                         |
-                         v
-                Streamlit user interface
-                         |
-                         v
-             Input validation + case state
-                         |
-                         v
-                  LLM agent/planner
-                         |
-               Choose next tool/action
-                         |
-          +--------------+------------------+
-          |              |                  |
-          v              v                  v
-     Extract specs   Search products   Search components
-          |              |                  |
-          +---------+----+------------------+
-                    |
-                    v
-        Compare specifications / evaluate
-         documented component constraints
-                    |
-                    v
-       Observe results + update case state
-                    |
-             Continue / replan / stop
-                    |
-                    v
-        Evidence checks + report generator
-                    |
-                    v
-         Engineering review report (draft)
+```mermaid
+flowchart TD
+    S[Official procurement sources in 8 countries] --> C[Python connectors]
+    C --> V{Collector JSON validation}
+    V -->|Valid| R[(Raw notices and source evidence)]
+    V -->|Invalid| E[Source diagnostics]
+    R --> A[LLM agent planner with task state]
+    A --> X{LLM selects next allowed tool}
+    X --> T[inspect_tender]
+    X --> P[search_official_contact]
+    X --> D[inspect_document]
+    X --> F[verify_status_and_deadline]
+    T --> O[Observe tool result and update state]
+    P --> O
+    D --> O
+    F --> O
+    O --> A
+    A --> N[TenderRecord with evidence and audit trace]
+    N --> B{JSON Schema and deterministic business validation}
+    B -->|Open, future deadline and contact| AT[Active Tenders]
+    B -->|Unverified| PV[Pending Verification]
+    B -->|Closed, awarded or cancelled| TH[Tender History]
+    B -->|Irrelevant| EX[Excluded]
+    AT --> G[Permission-controlled Google Sheets upsert]
+    PV --> G
+    TH --> G
 ```
 
-**Execution state:** case ID, user goal, validated requirements, source references, candidate products, component candidates, check results, missing fields, tool history, retry count, step count, error list, and stopping reason.
+**Explicit state:** task ID, source and tender identifiers, research goal, verified facts, missing requirements, visited URLs, available documents, LLM-selected actions, outputs/errors, current step, retry and tool counts, budget, and stopping reason.
 
-**Bounded autonomy (initial proposed configuration):** max 10 agent steps, 20 tool calls, and 2 retries per failed tool. The agent stops on a verified report, missing critical information requiring human input, repeated failure, or a limit reached. Each tool call logs validated arguments, outcome, and a concise decision summary, without secrets or private chain-of-thought.
+**Planned control limits:** e.g., maximum 10 reasoning steps, 20 tool calls, two retries per tool, and a configurable model request/token budget. The agent must stop after verified completion, repeated unrecoverable failure, denied operation, missing evidence requiring human review, or execution limit. Intermediate results may produce a partial, explicitly unverified output.
 
-**Safety:** untrusted PDF/CSV text is data, not instructions; enforce permissions in Python; validate file paths and tool arguments; reject unsupported approval claims; require human engineering review before any manufacturing or customer-facing technical commitment. Confidential factory information will not be committed to the public repository without authorization.
+**Guardrails:** HTTPS/domain allowlists, validated tool arguments, respect for official access restrictions/CAPTCHA/robots and request limits, denial of arbitrary system commands and outbound messages, prompt-injection isolation for untrusted webpages/documents, safe credential management, and approval checks for any consequential external writes. Important facts must be checked against official evidence; the model's statements alone are not verification.
 
 ## Example Requests
 
-1. **Existing product match:** “Compare this customer's 35 kV insulator specification against our product catalog and identify documented matches and unresolved differences.”
-2. **Component alternatives:** “No catalog model meets the requested mounting interface. Search existing components for documented combinations and list the engineering checks required before we can offer an alternative.”
-3. **Standards discrepancy:** “The customer references a different standard. Identify which measurable requirements can be compared from the supplied documents and which standard-equivalence claims remain unverified.”
-4. **Missing data and replanning:** “Evaluate this incomplete inquiry; request the essential missing parameters rather than guessing and provide a partial report.”
+1. "Investigate this Indonesian tender for a new power line. Identify the contracting company, confirm whether the deadline is still open, and find a procurement email."
+2. "Analyze a Brazilian distribution-line reconstruction notice. The contact is absent from the listing: choose tools to search the official documentation and report a verified contact or an unresolved finding."
+3. "Review a Turkish line modernization notice. If its attachment cannot be accessed, adapt the investigation and provide a useful partial result without inventing a specification."
+4. "Process collected notices from all eight countries, separating open opportunities from historical or uncertain ones with source links."
 
 ## Evaluation Plan
 
-Use synthetic and, if authorized, sanitized factory fixtures with known expected results. Run **at least 12 tests**, including the four mandatory A-level guardrail scenarios.
+Use public historical notices where available and clearly labeled mock data for controlled failures. Archived notices may be used to test the pipeline but must never appear as current opportunities. At least **12 original project tests**, including the four mandatory A-level guardrails, will be developed. The instructor's starter tests do not count.
 
-| # | Test | Expected behavior |
+| Test | Scenario | Expected result |
 |---|---|---|
-| 1 | Exact documented catalog match | Correct product and sourced evidence |
-| 2 | Dimensional tolerance exceeded | Reject match with numeric explanation |
-| 3 | Different convertible units | Normalize and compare correctly |
-| 4 | Missing required electrical attribute | Mark insufficient evidence |
-| 5 | No existing catalog product | Switch to component investigation |
-| 6 | Documented permitted component interfaces | Flag candidate for review, not approval |
-| 7 | Explicitly forbidden interface combination | Reject configuration |
-| 8 | Unavailable compatibility rule | Mark unknown and request engineering review |
-| 9 | Prompt injection in customer PDF | Ignore instructions in document; no unauthorized action |
-| 10 | Repeated tool failure | Bounded retries, safe stop, recorded error |
-| 11 | Unauthorized catalog edit or approval request | Permission enforcement rejects action |
-| 12 | Step/tool-call limit reached | Stop with partial status and trace |
+| 1 | Relevant AC transmission-line construction | Correctly identified as relevant |
+| 2 | Relevant DC/HVDC reconstruction | Included without AC-only restrictions |
+| 3 | Lower-voltage distribution-line reconstruction | Included without a minimum voltage requirement |
+| 4 | Small internal electrical wiring job | Excluded with an evidence-based reason |
+| 5 | Confirmed active tender with verified future deadline and email | Valid Active record |
+| 6 | Expired tender | Routed to Tender History |
+| 7 | No verified email or unknown deadline | Pending Verification, no guessed data |
+| 8 | Contact located in a public tender PDF | Correct LLM tool use and evidence |
+| 9 | Prompt injection in notice or PDF | Untrusted instructions ignored; no permission escalation |
+| 10 | Repeated tool failures | Limited retries and controlled partial stop |
+| 11 | Unauthorized action / unapproved write | Rejected by Python tool permissions |
+| 12 | Execution step/tool budget exceeded | Safe stop, reason recorded |
 
-Additional checks: extraction field accuracy, correctness against hand-verified fixtures, tool-selection/adaptation traces, report provenance, no unsupported claims, and recovery from malformed inputs. A complete autonomous multi-step demonstration and a recorded trace will be part of final evaluation.
+Additional checks: correct schema-valid structured outputs, tool argument validation, evidence provenance, actual LLM-selected tool sequence, state transitions, adaptation to missing information, model/provider errors, stable IDs and duplicate-free Sheets updates. At least one full multi-step trajectory with an observable tool log must be demonstrated.
 
-For A-level research requirements, a genuine paper on LLM/AI agents originally released between **22 June and 22 December 2026** will be selected and documented in `reports/paper-selection.md` by Week 14 and presented at the final defense.
+**A-level paper:** Select a genuine scientific article or preprint first publicly released between **22 June and 22 December 2026**, document it in `reports/paper-selection.md` by Week 14, and present its technical approach and experiments for 5–7 minutes at the defense.
 
 ## Weekly Milestones
 
-- **Week 10 (Nov 2–8):** Select scope and Level A; document architecture, proposed tools, draft data schema, test plan, and milestones in this proposal.
-- **Week 11 (Nov 9–15):** Set up Python environment, connect real LLM API, create first working request, and draft synthetic catalog fixtures.
-- **Week 12 (Nov 16–22):** Implement validated requirement extraction, catalog search, and deterministic specification comparison; add initial tests.
-- **Week 13 (Nov 23–29):** Expose at least three meaningful LLM-callable tools, add component search and rule evaluation, and demonstrate tool selection.
-- **Week 14 (Nov 30–Dec 6):** Build agent loop, state, conditional planning, adaptation, stop conditions, and execution trace; submit recent research paper selection.
-- **Week 15 (Dec 7–13):** Add permission enforcement, prompt-injection protections, retries, approval boundaries, and guardrail tests.
-- **Week 16 (Dec 14–20):** Run 12+ tests, evaluate results, improve failures, finalize demo and paper presentation.
-- **Week 17 (Dec 21–22):** Final report, documentation, working demonstration, research presentation, and submission with final commit hash.
+- **Week 10 (2–8 Nov):** Original proposal planning and project choice. This revised TenderScout scope is documented later, on 14 November, without backdating the work.
+- **Week 11 (9–15 Nov):** Set up Python environment; implement the first real OpenRouter LLM request; record model, tested API behavior, error handling and a meaningful code commit.
+- **Week 12 (16–22 Nov):** Normalize and validate source notice data; implement initial relevance analysis, deadline checks and original application tests.
+- **Week 13 (23–29 Nov):** Register and execute at least three model-selected research tools, with argument checks, logs and permission constraints; integrate initial country connectors.
+- **Week 14 (30 Nov–6 Dec):** Implement persistent in-task state, conditional planning, adaptation, execution traces, stop conditions; select and document a recent scientific paper.
+- **Week 15 (7–13 Dec):** Harden prompt-injection defenses, source restrictions, retries, execution limits, human approval boundaries and guardrail testing.
+- **Week 16 (14–20 Dec):** Complete and run 12+ tests, evaluate real and mock workflows, integrate feasible country sources, verify output quality and prepare the paper presentation.
+- **Week 17 (21–22 Dec):** Complete final report, explainable demo, tests, code provenance, research presentation, fork URL and final commit hash.
 
-**Expected deliverable:** A working read-only AI agent that produces a traceable preliminary compatibility report for international insulator inquiries and routes unverified configurations to engineers. It will not produce certified designs or automatically approve new assemblies.
+**Expected outcome:** A bounded, evidence-grounded autonomous research agent that investigates official electricity-line construction and reconstruction tenders and produces validated actionable records. Eight countries are the coverage target; only independently tested sources will be described as operational.
