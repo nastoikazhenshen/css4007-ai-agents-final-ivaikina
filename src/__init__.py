@@ -1,0 +1,1 @@
+"""TenderScout AI educational prototype."""
