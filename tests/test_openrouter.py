@@ -122,6 +122,37 @@ class OpenRouterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "title"):
             analyze_notice({"title": ""}, FakeClient("{}"))
 
+    def test_empty_reasoning_completion_reports_finish_reason(self):
+        # A reasoning endpoint may return HTTP 200 but no user-facing content.
+        response = {
+            "choices": [{"finish_reason": "length", "message": {
+                "content": None, "reasoning": "internal reasoning"
+            }}],
+            "usage": {"completion_tokens": 550, "completion_tokens_details": {"reasoning_tokens": 550}},
+        }
+        with patch("src.openrouter_client.urlopen") as opener:
+            opener.return_value.__enter__.return_value = io.BytesIO(
+                json.dumps(response).encode()
+            )
+            with self.assertRaisesRegex(LLMError, "finish_reason=length"):
+                self.client.complete([{"role": "user", "content": "hello"}])
+
+    def test_request_disables_reasoning_for_classifier(self):
+        with patch("src.openrouter_client.urlopen") as opener:
+            opener.return_value.__enter__.return_value = mock_completion(
+                '{"relevant":true,"project_type":"construction","reason":"Line"}'
+            )
+            self.client.complete([{"role": "user", "content": "hello"}])
+            payload = json.loads(opener.call_args.args[0].data)
+            self.assertEqual(payload["reasoning"], {"enabled": False})
+            self.assertGreaterEqual(payload["max_tokens"], 1024)
+
+    def test_empty_choices_is_specific_error(self):
+        with patch("src.openrouter_client.urlopen") as opener:
+            opener.return_value.__enter__.return_value = io.BytesIO(b'{"choices":[]}')
+            with self.assertRaisesRegex(LLMError, "no choices"):
+                self.client.complete([{"role": "user", "content": "hello"}])
+
 
 if __name__ == "__main__":
     unittest.main()
