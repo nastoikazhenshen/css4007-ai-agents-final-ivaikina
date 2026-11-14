@@ -1,15 +1,18 @@
 """OpenRouter Chat Completions adapter (Week 11).
 
 The API key is read from OPENROUTER_API_KEY; it is never printed, logged,
-or committed. Uses Python's standard library for a minimal first integration.
+or committed. Loads a local .env file via python-dotenv without overriding existing environment variables.
 """
 from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+from dotenv import load_dotenv
 
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "nvidia/nemotron-3.5-super-vl:free"
@@ -26,6 +29,8 @@ class OpenRouterClient:
         model: str | None = None,
         timeout: float = 45.0,
     ) -> None:
+        # The local .env stays on the user's machine; .gitignore excludes it.
+        load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / ".env", override=False)
         self.api_key = api_key if api_key is not None else os.getenv("OPENROUTER_API_KEY", "")
         self.model = model if model is not None else os.getenv("LLM_MODEL", DEFAULT_MODEL)
         self.timeout = timeout
