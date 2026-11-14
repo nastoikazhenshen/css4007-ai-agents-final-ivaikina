@@ -50,7 +50,7 @@ The interfaces are preliminary; each will be implemented with validated argument
 
 | Function / signature | Purpose | Inputs | Expected output | Dependencies |
 |---|---|---|---|---|
-| `collect_official_notices(source_id: str, since: str | None) -> dict` | Collect source announcements and technical health | Approved source ID; optional date cursor | CollectorRun JSON with notices, pagination, errors and coverage state | Python, httpx, approved source adapter |
+| `collect_official_notices(source_id: str, since: Optional[str]) -> dict` | Collect source announcements and technical health | Approved source ID; optional date cursor | CollectorRun JSON with notices, pagination, errors and coverage state | Python, httpx, approved source adapter |
 | `normalize_notice(raw_notice: dict) -> dict` | Standardize heterogeneous input | Collector notice | Canonical notice with original strings, normalized fields and provenance | Python, JSON Schema/Pydantic |
 | `inspect_tender(tender_url: str) -> dict` | Investigate an official tender page | Approved HTTPS notice URL | Buyer, project, publication data, links and cited evidence | Approved HTML/page fetcher |
 | `search_official_contact(tender_id: str) -> dict` | Find procurement-specific contact details | Tender ID and known official URLs | Name, verified email/contact channel, evidence URL, or unknown | Official page/document tools |
