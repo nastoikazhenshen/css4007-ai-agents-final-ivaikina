@@ -57,7 +57,10 @@ class OpenRouterClient:
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": messages,
-            "max_tokens": 550,
+            # Reasoning-capable models can exhaust small completion budgets
+            # before producing a final answer.
+            "max_tokens": 2048,
+            "reasoning": {"enabled": False},
             "temperature": 0,
         }
         if tools is not None:
@@ -87,12 +90,42 @@ class OpenRouterClient:
 
         try:
             result = json.loads(body.decode("utf-8"))
-            msg = result["choices"][0]["message"]
-            content = msg.get("content")
-            raw_calls = msg.get("tool_calls") or []
-            if not isinstance(raw_calls, list):
-                raise ValueError("tool_calls not a list")
-            tool_calls = []
+        except (UnicodeError, ValueError):
+            raise LLMError("OpenRouter response body is not valid JSON") from None
+
+        if not isinstance(result, dict):
+            raise LLMError("OpenRouter response JSON was not an object")
+        if result.get("error"):
+            # Do not log the provider-supplied message: it can contain user text.
+            error = result["error"]
+            code = error.get("code", "unknown") if isinstance(error, dict) else "unknown"
+            code = code if isinstance(code, int) else "unknown"
+            raise LLMError(f"OpenRouter returned a provider error (code={code})")
+
+        choices = result.get("choices")
+        if not isinstance(choices, list) or not choices:
+            raise LLMError("OpenRouter returned no choices (HTTP 200)")
+        choice = choices[0]
+        if not isinstance(choice, dict) or not isinstance(choice.get("message"), dict):
+            raise LLMError("OpenRouter choice is missing a message")
+        msg = choice["message"]
+        content = msg.get("content")
+        if isinstance(content, list):
+            # Some providers represent text as structured content parts.
+            parts = []
+            for part in content:
+                if not isinstance(part, dict) or not isinstance(part.get("text"), str):
+                    raise LLMError("OpenRouter returned unsupported content parts")
+                parts.append(part["text"])
+            content = "".join(parts)
+        if content is not None and not isinstance(content, str):
+            raise LLMError("OpenRouter message content was not text")
+
+        raw_calls = msg.get("tool_calls") or []
+        if not isinstance(raw_calls, list):
+            raise LLMError("OpenRouter tool_calls was not a list")
+        tool_calls = []
+        try:
             for call in raw_calls:
                 fn = call["function"]
                 tool_calls.append({
@@ -100,16 +133,33 @@ class OpenRouterClient:
                     "name": fn["name"],
                     "arguments": fn.get("arguments", "{}"),
                 })
-            if content is not None and not isinstance(content, str):
-                raise ValueError("response content is not text")
-            if not content and not tool_calls:
-                raise ValueError("response is empty")
-            return {
-                "text": content or "",
-                "toolCalls": tool_calls,
-                "model": result.get("model", self.model),
-                "request_id": result.get("id"),
-                "usage": result.get("usage"),
-            }
-        except (UnicodeError, ValueError, TypeError, KeyError, IndexError, AttributeError):
-            raise LLMError("OpenRouter returned invalid completion JSON") from None
+        except (KeyError, TypeError, AttributeError):
+            raise LLMError("OpenRouter tool call had invalid structure") from None
+
+        if not content and not tool_calls:
+            finish_reason = choice.get("finish_reason")
+            finish_reason = finish_reason if finish_reason in {
+                "stop", "length", "content_filter", "tool_calls"
+            } else "unknown"
+            usage = result.get("usage") if isinstance(result.get("usage"), dict) else {}
+            details = usage.get("completion_tokens_details")
+            details = details if isinstance(details, dict) else {}
+            token_info = []
+            for label, value in [
+                ("completion_tokens", usage.get("completion_tokens")),
+                ("reasoning_tokens", details.get("reasoning_tokens")),
+            ]:
+                if isinstance(value, int) and value >= 0:
+                    token_info.append(f"{label}={value}")
+            suffix = ", ".join(token_info)
+            raise LLMError(
+                f"OpenRouter returned empty completion (finish_reason={finish_reason}"
+                + (f", {suffix}" if suffix else "") + ")"
+            )
+        return {
+            "text": content or "",
+            "toolCalls": tool_calls,
+            "model": result.get("model", self.model),
+            "request_id": result.get("id"),
+            "usage": result.get("usage"),
+        }
