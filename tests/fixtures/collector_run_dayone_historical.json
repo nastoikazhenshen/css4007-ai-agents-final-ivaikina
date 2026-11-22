@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "historical-dayone-single-record",
+  "source_id": "pln_batam",
+  "country_code": "ID",
+  "started_at": "2026-11-13T10:34:29.366185+00:00",
+  "finished_at": "2026-11-13T10:34:29.366185+00:00",
+  "run_status": "success",
+  "coverage": {
+    "verified_complete": false,
+    "reason": "PLN Batam public index scanned, but archive completeness/pagination unproven",
+    "date_from": null,
+    "date_to": null,
+    "next_cursor": null
+  },
+  "metrics": {
+    "pages_requested": 0,
+    "pages_received": 0,
+    "records_seen": 195,
+    "records_emitted": 1,
+    "errors_count": 0
+  },
+  "http_observations": [],
+  "errors": [],
+  "tenders": [
+    {
+      "source_tender_id": "0030.Pm/DAN.00.01/PLNBATAM040300/2026",
+      "country_code": "ID",
+      "title_original": "Pembangunan Transmisi 150 KV Underground Cable (UGC) dari GI Tanjung Kasam ke GIS C Dayone dan Extension 2 Bay Line di GI Tanjung Kasam",
+      "description_original": "Sehubungan akan dilakukan Tender Terbuka Pekerjaan “Pembangunan Transmisi 150 KV Underground Cable (UGC) dari GI Tanjung Kasam ke GIS C Dayone dan Extension 2 Bay Line di GI Tanjung Kasam” di PT Pelayanan Listrik Nasional Batam (PT PLN Batam) dengan Pascakualifikasi, Pejabat Pelaksana Pengadaan Barang/Jasa PT PLN Batam yang berkedudukan di Jln. Engku Putri No. 03 Batam Center, Batam-Kepulauan Riau, mengundang penyedia barang dan jasa mengikuti tender dimaksud dengan ketentuan sebagai berikut",
+      "buyer_original": "PT PLN Batam",
+      "listing_url": "https://www.plnbatam.com/pengumuman-pengadaan/",
+      "tender_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+      "published_on": null,
+      "deadline_text": "05 Oktober 2026 Pukul 14.00 WIB",
+      "raw_status": "closed",
+      "documents": [
+        {
+          "title": "Pengumuman tender",
+          "url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+          "kind": "tender_notice",
+          "access": "public"
+        }
+      ],
+      "contact_hints": [
+        {
+          "name": null,
+          "email": "procman.plnb@gmail.com",
+          "phone": null,
+          "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf"
+        },
+        {
+          "name": null,
+          "email": "lakdan.korporat@plnbatam.com",
+          "phone": null,
+          "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf"
+        }
+      ],
+      "raw_payload": {
+        "source_id": "pln_batam",
+        "source_tender_id": "0030.Pm/DAN.00.01/PLNBATAM040300/2026",
+        "country_code": "ID",
+        "buyer_name_original": "PT PLN Batam",
+        "title_original": "Pembangunan Transmisi 150 KV Underground Cable (UGC) dari GI Tanjung Kasam ke GIS C Dayone dan Extension 2 Bay Line di GI Tanjung Kasam",
+        "description_original": "Sehubungan akan dilakukan Tender Terbuka Pekerjaan “Pembangunan Transmisi 150 KV Underground Cable (UGC) dari GI Tanjung Kasam ke GIS C Dayone dan Extension 2 Bay Line di GI Tanjung Kasam” di PT Pelayanan Listrik Nasional Batam (PT PLN Batam) dengan Pascakualifikasi, Pejabat Pelaksana Pengadaan Barang/Jasa PT PLN Batam yang berkedudukan di Jln. Engku Putri No. 03 Batam Center, Batam-Kepulauan Riau, mengundang penyedia barang dan jasa mengikuti tender dimaksud dengan ketentuan sebagai berikut",
+        "description_normalized": null,
+        "tender_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+        "published_at_original": "21 September 2026",
+        "deadline_at_utc": "2026-10-05T07:00:00Z",
+        "deadline_original": "05 Oktober 2026 Pukul 14.00 WIB",
+        "deadline_timezone": "Asia/Jakarta",
+        "registration_deadline_at_utc": "2026-10-05T07:00:00Z",
+        "bid_deadline_at_utc": "2026-10-06T06:30:00Z",
+        "deadline_basis": "registration",
+        "entry_status": "closed",
+        "procurement_status": "closed",
+        "processing_status": "archived",
+        "contacts": [
+          {
+            "name": null,
+            "department": "Pejabat Pelaksana Pengadaan",
+            "email": "procman.plnb@gmail.com",
+            "contact_type": "tender_department",
+            "evidence_ids": [
+              "ev_acc8af58eb31709ced29"
+            ]
+          },
+          {
+            "name": null,
+            "department": "Pejabat Pelaksana Pengadaan",
+            "email": "lakdan.korporat@plnbatam.com",
+            "contact_type": "tender_department",
+            "evidence_ids": [
+              "ev_b0c5c0b6880528cc5421"
+            ]
+          }
+        ],
+        "documents": [
+          {
+            "title": "Pengumuman tender",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "document_kind": "tender_document",
+            "sha256": "f08e3e8baec80457a8028b042bd7301b013e77d0303417d95697a9a75550ff12"
+          }
+        ],
+        "specification_url": null,
+        "spec_status": "restricted",
+        "evidence": [
+          {
+            "evidence_id": "ev_11708a8556c07de91b1c",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "locator": "PDF pp. 1–5 / Pemasukan Penawaran",
+            "observed_at": "2026-11-13T10:34:29.366185Z",
+            "original_excerpt": "Pemasukan Dokumen Penawaran pada tanggal 29 September s.d 06 Oktober 2026 (batas akhir pukul 13.30 WIB) Ketentuan pendaftaran adalah sebagai berikut:"
+          },
+          {
+            "evidence_id": "ev_ca6dfc61809eee39bae0",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "locator": "PDF pp. 1–5 / Pendaftaran",
+            "observed_at": "2026-11-13T10:34:29.366185Z",
+            "original_excerpt": "Pendaftaran dan Pengambilan Dokumen Tender/RKS dilakukan melalui email: Mulai Tanggal / Waktu: 21 September 2026 Pukul 14.30 WIB sd 05 Oktober 2026 Pukul 14.00 WIB (Jam Kerja)"
+          },
+          {
+            "evidence_id": "ev_acc8af58eb31709ced29",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "locator": "PDF pp. 1–5 / procurement email",
+            "observed_at": "2026-11-13T10:34:29.366185Z",
+            "original_excerpt": "uk mengikuti tender ini kepada Pejabat Pelaksana Pengadaan PT PLN Batam melalui email dengan alamat procman.plnb@gmail.com & lakdan.korporat@plnbatam.com sesuai batas waktu yang dite"
+          },
+          {
+            "evidence_id": "ev_b0c5c0b6880528cc5421",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "locator": "PDF pp. 1–5 / procurement email",
+            "observed_at": "2026-11-13T10:34:29.366185Z",
+            "original_excerpt": "epada Pejabat Pelaksana Pengadaan PT PLN Batam melalui email dengan alamat procman.plnb@gmail.com & lakdan.korporat@plnbatam.com sesuai batas waktu yang ditentukan; 2. Peserta/Calon Penyed"
+          },
+          {
+            "evidence_id": "ev_2c469a278557eb73b805",
+            "source_url": "https://www.plnbatam.com/wp-content/uploads/2026/09/06.-Pengumuman-PEMBANGUNAN-TRANSMISI-150-KV-UNDERGROUND-CABLE-UGC-DAYONE-1.pdf",
+            "locator": "PDF pp. 1–5 / publication",
+            "observed_at": "2026-11-13T10:34:29.366185Z",
+            "original_excerpt": "Batam, 21 September 2026"
+          }
+        ],
+        "last_seen_at": "2026-11-13T10:34:29.366185Z",
+        "last_verified_at": "2026-11-13T10:34:29.366185Z",
+        "content_sha256": "f08e3e8baec80457a8028b042bd7301b013e77d0303417d95697a9a75550ff12",
+        "verification_notes": [
+          "Срок обязательной регистрации истёк"
+        ]
+      },
+      "fetched_at": "2026-11-13T10:34:29.366185Z"
+    }
+  ]
+}
