@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "tr_sbb_plan",
+  "country_code": "TR",
+  "name": "SBB 2026 public investment programme",
+  "official_homepage": "https://www.sbb.gov.tr",
+  "approved_hosts": [
+    "www.sbb.gov.tr"
+  ],
+  "connector_type": "official_export",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://www.sbb.gov.tr/wp-content/uploads/2026/01/2026-Yili-Kamu-Yatirim-Programi-26012026.pdf",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 1440,
+  "endpoints": [
+    {
+      "purpose": "document",
+      "url": "https://www.sbb.gov.tr/wp-content/uploads/2026/01/2026-Yili-Kamu-Yatirim-Programi-26012026.pdf"
+    }
+  ],
+  "notes": "Future-project staging only. Public source publication/reuse policy reviewed; obey robots. No open tender status implied."
+}

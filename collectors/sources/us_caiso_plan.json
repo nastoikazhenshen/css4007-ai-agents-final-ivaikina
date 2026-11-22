@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "us_caiso_plan",
+  "country_code": "US",
+  "name": "CAISO 2025–2026 public Appendix H",
+  "official_homepage": "https://www.caiso.com",
+  "approved_hosts": [
+    "www.caiso.com"
+  ],
+  "connector_type": "official_export",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://www.caiso.com/privacy-terms-of-use",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 1440,
+  "endpoints": [
+    {
+      "purpose": "document",
+      "url": "https://www.caiso.com/documents/board-approved-2025-2026-transmission-plan-appendix-h-projects.pdf"
+    }
+  ],
+  "notes": "Future-project staging only. Public source publication/reuse policy reviewed; obey robots. No open tender status implied."
+}

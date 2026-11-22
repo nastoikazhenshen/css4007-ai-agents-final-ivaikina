@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "pe_oece",
+  "country_code": "PE",
+  "name": "OECE OCDS open contracting API",
+  "official_homepage": "https://contratacionesabiertas.oece.gob.pe",
+  "approved_hosts": [
+    "contratacionesabiertas.oece.gob.pe",
+    "prod1.seace.gob.pe"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://contratacionesabiertas.oece.gob.pe/downloads/politica_publicacion.pdf",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://contratacionesabiertas.oece.gob.pe/api/v1/records"
+    }
+  ],
+  "notes": "Published OCDS package CC BY 4.0. Public API and published attachments only; no bypass of SEACE access restrictions. TenderPeriod endDate not treated as confirmed bid deadline."
+}

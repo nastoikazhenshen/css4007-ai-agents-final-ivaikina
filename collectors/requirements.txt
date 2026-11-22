@@ -1,0 +1,8 @@
+# Python 3.12; install existing contracts/test and Indonesia dependencies as well.
+-r ../requirements.txt
+-r indonesia/requirements-browser.txt
+httpx>=0.28,<1
+jsonschema>=4.21,<5
+lxml>=5,<7
+PyMuPDF>=1.24,<2
+pytest>=8,<10

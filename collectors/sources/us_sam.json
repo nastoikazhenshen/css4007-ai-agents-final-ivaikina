@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "us_sam",
+  "country_code": "US",
+  "name": "SAM.gov public opportunities API",
+  "official_homepage": "https://sam.gov",
+  "approved_hosts": [
+    "api.sam.gov",
+    "sam.gov"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://open.gsa.gov/api/get-opportunities-public-api/",
+  "authentication": "api_key",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://api.sam.gov/opportunities/v2/search"
+    }
+  ],
+  "notes": "SAM_API_KEY environment variable required. Credential never exported; no claim of live data before authenticated test."
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "th_wb_projects",
+  "country_code": "TH",
+  "name": "World Bank project registry — TH",
+  "official_homepage": "https://projects.worldbank.org",
+  "approved_hosts": [
+    "search.worldbank.org",
+    "projects.worldbank.org",
+    "documents1.worldbank.org"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://www.worldbank.org/ext/en/legal/terms-conditions/datasets",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://search.worldbank.org/api/v2/projects"
+    }
+  ],
+  "notes": "Documented public search API. Borrower-country coverage, not a national tender register. All categories retained before local screening; Published is not Open."
+}
