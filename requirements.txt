@@ -1,1 +1,1 @@
-python-dotenv>=1.0,<2
+python-dotenv>=1.0,<2\njsonschema>=4.21,<5\npytest>=8,<10\n
