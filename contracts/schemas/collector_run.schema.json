@@ -1,0 +1,435 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent research.example/schemas/collector_run.schema.json",
+  "title": "independent research TenderScout AI — collector_run 1.0.0",
+  "description": "One run result. Valid JSON can contain zero tenders or partial coverage; it does not certify source completeness.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 5
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "country_code": {
+      "enum": [
+        "ID",
+        "TH",
+        "TR",
+        "US",
+        "MX",
+        "BR",
+        "AR",
+        "PE"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_status": {
+      "enum": [
+        "success",
+        "partial",
+        "empty_unverified",
+        "blocked",
+        "unavailable",
+        "failed"
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verified_complete": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date_from": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "date_to": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "next_cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "verified_complete",
+        "reason",
+        "date_from",
+        "date_to",
+        "next_cursor"
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pages_requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pages_received": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records_seen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "records_emitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "pages_requested",
+        "pages_received",
+        "records_seen",
+        "records_emitted",
+        "errors_count"
+      ]
+    },
+    "http_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          },
+          "status_code": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 100,
+            "maximum": 599
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "url",
+          "status_code",
+          "observed_at",
+          "note"
+        ]
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error_code": {
+            "enum": [
+              "http_403",
+              "http_429",
+              "http_503",
+              "timeout",
+              "captcha",
+              "auth_required",
+              "rate_limit",
+              "parse_error",
+              "other"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "retryable"
+        ]
+      }
+    },
+    "tenders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/raw_tender"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "source_id",
+    "country_code",
+    "started_at",
+    "finished_at",
+    "run_status",
+    "coverage",
+    "metrics",
+    "http_observations",
+    "errors",
+    "tenders"
+  ],
+  "$defs": {
+    "raw_tender": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_tender_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country_code": {
+          "enum": [
+            "ID",
+            "TH",
+            "TR",
+            "US",
+            "MX",
+            "BR",
+            "AR",
+            "PE"
+          ]
+        },
+        "title_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "buyer_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "listing_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "tender_url": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "published_on": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "specification",
+                  "tender_notice",
+                  "terms_of_reference",
+                  "bill_of_quantities",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "access": {
+                "enum": [
+                  "public",
+                  "registration_required",
+                  "restricted",
+                  "unavailable",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "title",
+              "url",
+              "kind",
+              "access"
+            ]
+          }
+        },
+        "contact_hints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "phone": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_url": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "email",
+              "phone",
+              "source_url"
+            ]
+          }
+        },
+        "raw_payload": {
+          "type": [
+            "object",
+            "array",
+            "string",
+            "null"
+          ]
+        },
+        "fetched_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "source_tender_id",
+        "country_code",
+        "title_original",
+        "description_original",
+        "buyer_original",
+        "listing_url",
+        "tender_url",
+        "published_on",
+        "deadline_text",
+        "raw_status",
+        "documents",
+        "contact_hints",
+        "raw_payload",
+        "fetched_at"
+      ]
+    }
+  }
+}

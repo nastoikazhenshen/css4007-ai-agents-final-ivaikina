@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent research.example/schemas/agent_action.schema.json",
+  "title": "independent research TenderScout AI — agent_action 1.0.0",
+  "description": "Agent tool choice proposal. Enforcement of URL allowlist, permission and budget is in Python executor.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 5
+    },
+    "action_id": {
+      "type": "string",
+      "minLength": 5
+    },
+    "action": {
+      "enum": [
+        "inspect_tender",
+        "inspect_document",
+        "search_official_contact",
+        "verify_status_and_deadline",
+        "finish",
+        "manual_review"
+      ]
+    },
+    "target_url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "document_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attempt_number": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "tool_budget_remaining": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "schema_version",
+    "record_id",
+    "action_id",
+    "action",
+    "target_url",
+    "document_id",
+    "reason",
+    "attempt_number",
+    "tool_budget_remaining",
+    "requested_at"
+  ]
+}

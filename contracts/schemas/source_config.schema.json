@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent research.example/schemas/source_config.schema.json",
+  "title": "independent research TenderScout AI — source_config 1.0.0",
+  "description": "Source registry/configuration, not authorization to scrape. Do not run prohibited/unverified automated access.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "country_code": {
+      "enum": [
+        "ID",
+        "TH",
+        "TR",
+        "US",
+        "MX",
+        "BR",
+        "AR",
+        "PE"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "official_homepage": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "approved_hosts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "connector_type": {
+      "enum": [
+        "official_api",
+        "official_feed",
+        "official_export",
+        "public_html",
+        "authorized_portal",
+        "manual_only"
+      ]
+    },
+    "automation_permission": {
+      "enum": [
+        "confirmed_permitted",
+        "permission_required",
+        "prohibited",
+        "not_verified"
+      ]
+    },
+    "permission_evidence_url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authentication": {
+      "enum": [
+        "none",
+        "api_key",
+        "oauth",
+        "account",
+        "digital_signature",
+        "unknown"
+      ]
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "poll_interval_minutes": {
+      "type": "integer",
+      "minimum": 15,
+      "maximum": 10080
+    },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "purpose": {
+            "enum": [
+              "listing",
+              "detail",
+              "document",
+              "metadata"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          }
+        },
+        "required": [
+          "purpose",
+          "url"
+        ]
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_id",
+    "country_code",
+    "name",
+    "official_homepage",
+    "approved_hosts",
+    "connector_type",
+    "automation_permission",
+    "permission_evidence_url",
+    "authentication",
+    "enabled",
+    "poll_interval_minutes",
+    "endpoints",
+    "notes"
+  ]
+}

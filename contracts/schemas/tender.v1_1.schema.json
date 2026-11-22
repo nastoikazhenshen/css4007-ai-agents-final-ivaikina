@@ -1,0 +1,651 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.1.0"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9:_-]{5,120}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "tender_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "official_url_verified": {
+          "type": "boolean"
+        },
+        "access": {
+          "enum": [
+            "public",
+            "registration_required",
+            "restricted",
+            "unknown"
+          ]
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_name",
+        "source_url",
+        "tender_url",
+        "official_url_verified",
+        "access",
+        "retrieved_at"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "country_code": {
+          "enum": [
+            "ID",
+            "TH",
+            "TR",
+            "US",
+            "MX",
+            "BR",
+            "AR",
+            "PE"
+          ]
+        },
+        "country_name_ru": {
+          "enum": [
+            "Индонезия",
+            "Таиланд",
+            "Турция",
+            "США",
+            "Мексика",
+            "Бразилия",
+            "Аргентина",
+            "Перу"
+          ]
+        },
+        "buyer_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "work_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "new_construction",
+              "reconstruction",
+              "modernization",
+              "expansion",
+              "line_equipment_replacement",
+              "epc"
+            ]
+          }
+        },
+        "line_type": {
+          "enum": [
+            "overhead",
+            "underground",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "current_type": {
+          "enum": [
+            "AC",
+            "DC",
+            "AC_DC",
+            "unknown"
+          ]
+        },
+        "voltage_kv": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "scale": {
+          "enum": [
+            "industrial",
+            "small",
+            "unknown"
+          ]
+        },
+        "scale_reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "country_code",
+        "country_name_ru",
+        "buyer_name",
+        "title",
+        "description",
+        "work_types",
+        "line_type",
+        "current_type",
+        "voltage_kv",
+        "scale",
+        "scale_reason"
+      ]
+    },
+    "procurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tender_number": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "published_on": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline_date": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline_time": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline_timezone": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "open",
+            "closed",
+            "cancelled",
+            "awarded",
+            "planned",
+            "unknown"
+          ]
+        },
+        "status_checked_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "tender_number",
+        "published_on",
+        "deadline_date",
+        "deadline_time",
+        "deadline_timezone",
+        "status",
+        "status_checked_at"
+      ]
+    },
+    "contacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "official_channel_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "enum": [
+              "tender_specific",
+              "procurement_department",
+              "generic_corporate",
+              "official_tender_portal_channel"
+            ]
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "evidence_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_location": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "role",
+          "email",
+          "phone",
+          "official_channel_url",
+          "kind",
+          "verified",
+          "evidence_url",
+          "evidence_location"
+        ]
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kind": {
+            "enum": [
+              "specification",
+              "terms_of_reference",
+              "bill_of_quantities",
+              "tender_notice",
+              "other"
+            ]
+          },
+          "access": {
+            "enum": [
+              "public",
+              "registration_required",
+              "unavailable",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "kind",
+          "access"
+        ]
+      }
+    },
+    "specification_status": {
+      "enum": [
+        "found",
+        "registration_required",
+        "not_found",
+        "not_checked",
+        "unavailable"
+      ]
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "is_power_line_project": {
+          "enum": [
+            "yes",
+            "no",
+            "uncertain"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "active",
+            "pending_verification",
+            "history",
+            "excluded"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 5
+        },
+        "missing_fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "source.tender_url",
+              "project.country_code",
+              "project.buyer_name",
+              "project.title",
+              "project.description",
+              "project.work_types",
+              "project.scale",
+              "procurement.status",
+              "procurement.deadline_date",
+              "contacts.email",
+              "documents.specification",
+              "other"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "commercial_relevance": {
+          "enum": [
+            "relevant",
+            "potential",
+            "irrelevant",
+            "uncertain"
+          ]
+        },
+        "project_categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "overhead_line",
+              "underground_cable",
+              "insulators",
+              "line_fittings",
+              "grid_project",
+              "other"
+            ]
+          }
+        },
+        "product_demand": {
+          "enum": [
+            "confirmed",
+            "possible",
+            "unknown",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "is_power_line_project",
+        "decision",
+        "reason",
+        "missing_fields",
+        "confidence",
+        "commercial_relevance",
+        "project_categories",
+        "product_demand"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "excerpt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "field_path",
+          "source_url",
+          "location",
+          "excerpt",
+          "checked_at"
+        ]
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "last_checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "attempt_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "collection_method": {
+          "enum": [
+            "api",
+            "html",
+            "browser",
+            "file",
+            "email_notification",
+            "manual"
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "last_checked_at",
+        "attempt_count",
+        "collection_method",
+        "notes"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "record_id",
+    "source",
+    "project",
+    "procurement",
+    "contacts",
+    "documents",
+    "specification_status",
+    "assessment",
+    "evidence",
+    "audit"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent research.example/schemas/tender.v1_1.schema.json",
+  "title": "independent research TenderScout AI — TenderRecord 1.1.0 (commercial relevance separated)",
+  "description": "Additive commercial classification; source collectors remain on CollectorRun v1.0.0."
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://independent research.example/schemas/sheets_row.schema.json",
+  "title": "independent research TenderScout AI — sheets_row 1.0.0",
+  "description": "Deterministically derived from validated tender record; do NOT ask LLM to create Sheets row independently.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 5
+    },
+    "target_sheet": {
+      "enum": [
+        "Active Tenders",
+        "Pending Verification",
+        "Tender History"
+      ]
+    },
+    "country": {
+      "type": "string",
+      "minLength": 2
+    },
+    "company": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contact_person": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "email": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tender_url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "deadline_date": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "specification_url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "open",
+        "closed",
+        "cancelled",
+        "awarded",
+        "planned",
+        "unknown"
+      ]
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "schema_version",
+    "record_id",
+    "target_sheet",
+    "country",
+    "company",
+    "project",
+    "contact_person",
+    "email",
+    "tender_url",
+    "deadline_date",
+    "specification_url",
+    "status",
+    "last_checked_at"
+  ]
+}
