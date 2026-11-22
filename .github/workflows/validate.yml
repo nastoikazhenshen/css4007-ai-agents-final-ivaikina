@@ -26,6 +26,7 @@ jobs:
       - run: npm test
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s tests -p 'test_openrouter.py' -v
+      - run: python -m pytest -q tests/test_tender_core.py
       - run: npm run validate
         env:
           REQUIRED_WEEK: ${{ inputs.required_week }}
