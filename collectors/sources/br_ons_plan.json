@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "br_ons_plan",
+  "country_code": "BR",
+  "name": "ONS PAR PEL summary",
+  "official_homepage": "https://www.ons.org.br",
+  "approved_hosts": [
+    "www.ons.org.br"
+  ],
+  "connector_type": "public_html",
+  "automation_permission": "not_verified",
+  "permission_evidence_url": null,
+  "authentication": "none",
+  "enabled": false,
+  "poll_interval_minutes": 1440,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://www.ons.org.br/Paginas/energia-no-futuro/suprimento-eletrico/parpel2025/sumario-executivo/index.aspx"
+    }
+  ],
+  "notes": "Parser prepared and tested against inspected public input. Autonomous collection disabled: scoped publication/automation permission not established. Audit HTTP success is not automation permission."
+}

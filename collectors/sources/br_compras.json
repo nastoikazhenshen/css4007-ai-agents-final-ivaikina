@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "br_compras",
+  "country_code": "BR",
+  "name": "Compras.gov.br open data",
+  "official_homepage": "https://dadosabertos.compras.gov.br",
+  "approved_hosts": [
+    "dadosabertos.compras.gov.br",
+    "pncp.gov.br"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://dadosabertos.compras.gov.br/swagger-ui/index.html",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://dadosabertos.compras.gov.br/modulo-contratacoes/1_consultarContratacoes_PNCP_14133"
+    }
+  ],
+  "notes": null
+}

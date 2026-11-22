@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "br_pncp",
+  "country_code": "BR",
+  "name": "PNCP public consultation API",
+  "official_homepage": "https://pncp.gov.br",
+  "approved_hosts": [
+    "pncp.gov.br"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://pncp.gov.br/api/consulta/swagger-ui/index.html",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao"
+    }
+  ],
+  "notes": "Official documented public consultation API. File downloads additionally check robots. Unzoned timestamps remain unconfirmed."
+}

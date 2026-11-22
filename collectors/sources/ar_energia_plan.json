@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "ar_energia_plan",
+  "country_code": "AR",
+  "name": "Argentina prioritized transmission expansion programme",
+  "official_homepage": "https://www.argentina.gob.ar",
+  "approved_hosts": [
+    "www.argentina.gob.ar"
+  ],
+  "connector_type": "official_export",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://www.argentina.gob.ar/terminos-y-condiciones",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 1440,
+  "endpoints": [
+    {
+      "purpose": "document",
+      "url": "https://www.argentina.gob.ar/sites/default/files/2026/08/mapa_ampliacion_de_transporte_electrico.pdf"
+    },
+    {
+      "purpose": "detail",
+      "url": "https://www.argentina.gob.ar/node/508006"
+    }
+  ],
+  "notes": "Future-project staging only. Public source publication/reuse policy reviewed; obey robots. No open tender status implied."
+}
