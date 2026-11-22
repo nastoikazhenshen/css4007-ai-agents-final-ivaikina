@@ -1,0 +1,5 @@
+{
+  "type": "synthetic parser fixtures",
+  "real_data": false,
+  "actual_live_reports": "../reports/live/"
+}

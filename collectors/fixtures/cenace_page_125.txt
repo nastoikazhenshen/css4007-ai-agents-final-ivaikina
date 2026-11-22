@@ -1,0 +1,2 @@
+Synthetic schema/parser example, not a real project.
+Se han programado los proyectos Nodo Alfa entronque Nodo Beta – Nodo Gamma y Nodo Delta entronque Nodo Epsilon – Nodo Zeta como solución a la problemática de transmisión.
