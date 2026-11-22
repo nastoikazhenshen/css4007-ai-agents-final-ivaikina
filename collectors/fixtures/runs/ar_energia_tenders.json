@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "synthetic-fixture-ar_energia_tenders",
+  "source_id": "ar_energia_tenders",
+  "country_code": "AR",
+  "started_at": "2026-11-22T00:00:00Z",
+  "finished_at": "2026-11-22T00:00:00Z",
+  "run_status": "partial",
+  "coverage": {
+    "verified_complete": false,
+    "reason": "Synthetic schema example, not a live capture",
+    "date_from": null,
+    "date_to": null,
+    "next_cursor": null
+  },
+  "metrics": {
+    "pages_requested": 0,
+    "pages_received": 0,
+    "records_seen": 1,
+    "records_emitted": 1,
+    "errors_count": 0
+  },
+  "http_observations": [],
+  "errors": [],
+  "tenders": [
+    {
+      "source_tender_id": "SYNTHETIC-EXAMPLE",
+      "country_code": "AR",
+      "title_original": "Synthetic OHL construction example — not a real procurement",
+      "description_original": null,
+      "buyer_original": "Synthetic example organization",
+      "listing_url": "https://www.argentina.gob.ar/economia/energia/licitacion-amba-i",
+      "tender_url": "https://www.argentina.gob.ar/economia/energia/synthetic-example-not-a-real-tender",
+      "published_on": null,
+      "deadline_text": null,
+      "raw_status": "synthetic; unknown",
+      "documents": [],
+      "contact_hints": [],
+      "raw_payload": {
+        "synthetic_fixture": true,
+        "no_live_evidence": true
+      },
+      "fetched_at": "2026-11-22T00:00:00Z"
+    }
+  ]
+}

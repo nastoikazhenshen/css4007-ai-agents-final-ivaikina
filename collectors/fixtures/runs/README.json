@@ -1,0 +1,6 @@
+{
+  "kind": "synthetic contract fixtures only",
+  "not_live_tests": true,
+  "actual_records": "excluded from public git; retained in ignored runtime storage",
+  "counts_and_validation": "reports/live and real_data_replay.json contain aggregate results from actual network captures"
+}
