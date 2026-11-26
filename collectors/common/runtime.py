@@ -19,8 +19,9 @@ def fingerprint(value):
         return x
     return hashlib.sha256(json.dumps(stable(value),sort_keys=True,ensure_ascii=False).encode()).hexdigest()
 def safe_url(url):
-    u=urlsplit(str(url));q=[(k,'REDACTED' if k.lower() in {'api_key','key','token','access_token'} else v) for k,v in parse_qsl(u.query,keep_blank_values=True)]
-    return urlunsplit((u.scheme,u.netloc,u.path,urlencode(q),u.fragment))
+    u=urlsplit(str(url));q=[(k,'REDACTED' if k.lower() in {'api_key','key','token','access_token','sid','sessionid','jsessionid','phpsessid','asp.net_sessionid','_event_transid'} else v) for k,v in parse_qsl(u.query,keep_blank_values=True)]
+    path=re.sub(r';jsessionid=[^/?;]+',';jsessionid=REDACTED',u.path,flags=re.I)
+    return urlunsplit((u.scheme,u.netloc,path,urlencode(q),u.fragment))
 def schema(value,name):
     obj=json.loads((ROOT/'contracts/schemas'/name).read_text());Draft202012Validator(obj,format_checker=FormatChecker()).validate(value)
 
@@ -71,15 +72,16 @@ class CollectorState(State):
 class CurlTransport(httpx.BaseTransport):
     """Optional execution-environment proxy transport; default deployment uses httpx."""
     def handle_request(self,request):
-        if request.method!='GET':raise SourceError('Read-only transport')
+        if request.method not in {'GET','POST'}:raise SourceError('Read-only transport')
         with tempfile.TemporaryDirectory() as temp:
             body=Path(temp)/'body';head=Path(temp)/'headers'
             # URL via stdin, never expose API credentials in argv or diagnostic output.
             config='url = '+json.dumps(str(request.url))+'\n'
+            if request.method=='POST':config+='request = \"POST\"\n'+'data-binary = '+json.dumps(request.content.decode())+'\n'
             cmd=['curl','--silent','--show-error','--max-time','45','--max-filesize','100000000','--config','-',
                  '--dump-header',str(head),'--output',str(body),'--write-out','%{http_code}']
             for k,v in request.headers.items():
-                if k.lower() not in {'host','connection','accept-encoding'}:cmd.extend(['--header',k+': '+v])
+                if k.lower() not in {'host','connection','accept-encoding'}:config+='header = '+json.dumps(k+': '+v)+'\n'
             p=subprocess.run(cmd,input=config,text=True,capture_output=True)
             if p.returncode:
                 exc=httpx.ReadTimeout if p.returncode==28 else httpx.TransportError
@@ -88,14 +90,20 @@ class CurlTransport(httpx.BaseTransport):
             hs=[]
             for line in block.splitlines()[1:]:
                 k,sep,v=line.partition(':')
-                if sep and k.lower() not in {'set-cookie','content-encoding','transfer-encoding','content-length'}:hs.append((k.strip(),v.strip()))
+                if sep and k.lower() not in {'content-encoding','transfer-encoding','content-length'}:hs.append((k.strip(),v.strip()))
             return httpx.Response(int(p.stdout[-3:]),headers=hs,content=body.read_bytes() if body.exists() else b'',request=request)
 
 class Fetcher:
     def __init__(self,config,state,client=None,sleep=time.sleep,interval=0.3):
         schema(config,'source_config.schema.json');self.config=config;self.state=state;self.client=client or httpx.Client(timeout=45,follow_redirects=False)
-        self.sleep=sleep;self.interval=interval;self.last=0.;self.observations=[];self.robots={};self.requests=0
-    def get(self,url,*,policy=False):
+        self.sleep=sleep;self.interval=interval;self.last=0.;self.observations=[];self.robots={};self.requests=0;self.paused_origins={}
+    def get(self,url,*,policy=False,form=None):
+        if form is not None:
+            public_table=self.config['source_id']=='tr_tredas' and url=='https://tredas.com.tr/modules/load/bids'
+            public_card=self.config['source_id']=='ar_contratar' and url=='https://contratar.gob.ar/ListarAperturaProxima.aspx' and re.fullmatch(r'ctl00\$CPH1\$GridListaPliegos\$ctl\d+\$lnkNumeroProceso',form.get('__EVENTTARGET',''))
+            public_mea=self.config['source_id']=='th_mea' and url=='https://procurement.mea.or.th/Procurement/Search'
+            public_sidof=self.config['source_id']=='mx_sidof' and url in {'https://sidof.segob.gob.mx/busqueda/cargaNotas/','https://sidof.segob.gob.mx/busqueda/CargaNotasAvanzadas/'}
+            if not (public_table or public_card or public_mea or public_sidof):raise SourceError('Only approved public read-only listing/card navigation POSTs are allowed','auth_required')
         if not self.config['enabled'] or self.config['automation_permission']!='confirmed_permitted':raise SourceError('Source automation is disabled or permission unconfirmed','auth_required')
         if not allowed(url,self.config['approved_hosts']):raise SourceError('URL outside approved HTTPS hosts','auth_required')
         if self.config['source_id']=='us_sam' and 'api_key=REDACTED' in url:
@@ -103,17 +111,21 @@ class Fetcher:
             if not key:raise SourceError('SAM_API_KEY required to resume','auth_required')
             u=urlsplit(url);q=[(k,key if k=='api_key' else v) for k,v in parse_qsl(u.query)];url=urlunsplit((u.scheme,u.netloc,u.path,urlencode(q),u.fragment))
         for hop in range(5):
+            origin=urlsplit(url).scheme+'://'+urlsplit(url).netloc
+            if origin in self.paused_origins:raise self.paused_origins[origin]
             for attempt in range(3):
                 self.sleep(max(0,self.interval-(time.monotonic()-self.last)));self.last=time.monotonic();self.requests+=1
                 try:
-                    response=self.client.get(url);status=response.status_code
+                    response=self.client.post(url,data=form) if form is not None else self.client.get(url);status=response.status_code
                 except httpx.TimeoutException:
                     self.observations.append(dict(url=safe_url(url),status_code=None,observed_at=utc(),note='timeout'))
-                    if attempt==2:raise SourceError('timeout','timeout',True)
+                    if attempt==2:
+                        error=SourceError('timeout; origin paused for this run','timeout',True);self.paused_origins[origin]=error;raise error
                     self.sleep(2**attempt);continue
                 except httpx.TransportError:
                     self.observations.append(dict(url=safe_url(url),status_code=None,observed_at=utc(),note='transport error'))
-                    if attempt==2:raise SourceError('network transport error','other',True)
+                    if attempt==2:
+                        error=SourceError('network transport error; origin paused for this run','other',True);self.paused_origins[origin]=error;raise error
                     self.sleep(2**attempt);continue
                 self.observations.append(dict(url=safe_url(url),status_code=status,observed_at=utc(),note='attempt '+str(attempt+1)))
                 self.state.raw(self.config['source_id'],safe_url(url),datetime.now(timezone.utc),response.content)
@@ -126,11 +138,13 @@ class Fetcher:
                             delay=max(0,(parsedate_to_datetime(ra)-datetime.now(timezone.utc)).total_seconds())
                         except (ValueError,TypeError,OverflowError):pass
                     code='http_429' if status==429 else 'http_503' if status==503 else 'other'
-                    if attempt==2 or delay>60:raise SourceError('HTTP '+str(status)+' retry limit / Retry-After',code,True)
+                    if attempt==2 or delay>60:
+                        error=SourceError('HTTP '+str(status)+' retry limit / Retry-After; retry_delay_seconds='+str(delay)+'; retry_after_header='+(ra[:100] or 'absent')+'; origin paused for this run',code,True);self.paused_origins[origin]=error;raise error
                     self.sleep(delay);continue
                 if response.is_redirect:
                     target=urljoin(str(response.url),response.headers.get('location',''))
                     if not allowed(target,self.config['approved_hosts']):raise SourceError('Redirect outside approved hosts','auth_required')
+                    if status in {301,302,303}:form=None
                     url=target;break
                 if status>=400:raise SourceError('HTTP '+str(status),'other')
                 prefix=response.content[:2000].decode(errors='ignore')
@@ -155,7 +169,7 @@ class Fetcher:
                 # A real absent robots file is not an authorization wall. Permission still comes from SourceConfig.
                 if str(e) in {'HTTP 404','HTTP 410'}:parser=RobotFileParser();parser.parse([]);self.robots[origin]=parser
                 else:return False,'robots_policy_unresolved: '+str(e)
-        return (True,None) if self.robots[origin].can_fetch('independent research-TenderScout',url) else (False,'robots_disallowed')
+        return (True,None) if self.robots[origin].can_fetch('public_research-TenderScout',url) else (False,'robots_disallowed')
     def attachment(self,source,identifier,doc,directory):
         url=doc['url'];out=dict(source_url=url,title=doc.get('title'),document_kind=doc.get('kind'),download_status='not_downloaded',download_reason=None)
         try:

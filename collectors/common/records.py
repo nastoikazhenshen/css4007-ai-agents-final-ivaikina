@@ -4,13 +4,14 @@ from datetime import datetime
 from lxml import html, etree
 from .runtime import utc
 
-PATTERN=re.compile(r'overhead|reconduct|\belectrif|transmi(?:ss|s)[aãioó]*[nõo]*\s+el[eé]ctr|\binsulators?\b|\bisoladores?\b|\baisladores?\b|\bizolat[oö]r|ferragen|herrajes|\bE[İI]H\b|havai|enerji\s+(?:iletim|nakil)|(?:linhas?|l[ií]neas?)\s+(?:a[eé]reas?\s+)?(?:de\s+)?transmi(?:ss|s)|\btransmission\s+(?:line|network|project)|(?:power|electric(?:al|ity)?)\s+transmission|substation|subesta|gardu|\bgrid\b|\btransmission and distribution\b|\bpower\s+(?:line|network)|electrical\s+network|linhas?\s+(?:de\s+)?(?:(?:alta|m[eé]dia|baixa)\s+tens[aã]o|distribui|el[eé]trica)|rede\s+(?:a[eé]rea|el[eé]trica|de\s+distribui)|l[ií]nea\s+(?:a[eé]rea|el[eé]ctrica|de\s+(?:distribuci|alta|media|baja))|สายส่ง|สายจำหน่าย|ลูกถ้วย',re.I)
 EMAIL=re.compile(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}')
 def text(value):
     if not value:return ''
     try:return ' '.join(html.fromstring(str(value)).text_content().split())
     except (ValueError,TypeError,etree.ParserError):return str(value)
-def candidate(*values):return bool(PATTERN.search(' '.join(text(v) for v in values if v)))
+def candidate(*values):
+    from .relevance import assess
+    return assess(values[0] if values else '', ' '.join(text(v) for v in values[1:] if v))['verdict']!='excluded'
 def evidenced_contacts(values,url,locator,now):
     contacts=[];evidence=[]
     for value in values:
