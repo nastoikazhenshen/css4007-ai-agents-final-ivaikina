@@ -24,7 +24,9 @@ def parse(config,row,observed):
         if set(party.get('roles',[])) & {'buyer','procuringEntity'}:
             cp=dict(party.get('contactPoint') or {});contacts.append(cp)
     docs=[dict(title=d.get('title') or d.get('documentType') or 'Official attachment',url=d['url'],kind='other',access='unknown') for d in tender.get('documents',[]) if str(d.get('url','')).startswith('https://')]
-    r=notice(config,id=row['ocid'],title=tender.get('description') or tender.get('title'),description=tender.get('title'),buyer=buyer.get('name'),url=API+'record/'+row['ocid'],raw=row,published=tender.get('datePublished'),status='; '.join(sorted(set(str(i.get('statusDetails') or i.get('status')) for i in tender.get('items',[])))),documents=docs,contacts=contacts,now=observed,locator='OCDS '+row['ocid'])
+    item_descriptions=[str(i.get('description') or '') for i in tender.get('items',[]) if isinstance(i,dict)]
+    description='\n'.join([tender.get('description') or '',*item_descriptions]).strip() or None
+    r=notice(config,id=row['ocid'],title=tender.get('title') or tender.get('description'),description=description,buyer=buyer.get('name'),url=API+'record/'+row['ocid'],raw=row,published=tender.get('datePublished'),status=tender.get('status') or '; '.join(sorted(set(str(i.get('statusDetails') or i.get('status')) for i in tender.get('items',[])))),documents=docs,contacts=contacts,now=observed,locator='OCDS '+row['ocid'])
     r['raw_payload']['deadline_candidates_unverified']={'tenderPeriod':tender.get('tenderPeriod'),'enquiryPeriod':tender.get('enquiryPeriod')}
     r['raw_payload']['missing_fields'].append('OCDS tenderPeriod is not assumed to be bid-submission cutoff')
     return r

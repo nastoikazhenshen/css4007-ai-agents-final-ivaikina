@@ -8,7 +8,8 @@ from .pncp_legacy import purchase_path,detail_url,record_url,attachments_url
 API='https://pncp.gov.br/api/consulta/v1/contratacoes/'
 def listing(options,modality):
     mode=options.get('mode','full');route='proposta' if options.get('open_proposals') else 'atualizacao' if mode=='incremental' else 'publicacao'
-    params=dict(dataFinal=options['end'].replace('-',''),codigoModalidadeContratacao=modality,pagina=1,tamanhoPagina=options.get('page_size',50))
+    params=dict(dataFinal=options['end'].replace('-',''),pagina=1,tamanhoPagina=options.get('page_size',50))
+    if modality is not None:params['codigoModalidadeContratacao']=modality
     if route!='proposta':params['dataInicial']=options['start'].replace('-','')
     return API+route+'?'+urlencode(params)
 def page(obj,url):
