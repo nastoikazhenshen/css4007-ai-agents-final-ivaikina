@@ -13,3 +13,7 @@ Thumbs.db
 .private/
 *.pem
 *.key
+var/
+*.sqlite
+*.sqlite3
+__temporary_pdf_page_*.png

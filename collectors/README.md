@@ -44,7 +44,7 @@ These records are **leads for future projects**, not published open procurements
 python -m pytest -q collectors/tests tests/test_tender_core.py
 ```
 
-The tests use deterministic fixtures. Real network results vary by country, service availability, API permissions and date. The LLM classification component (`src/tender_classifier.py`) is not yet the orchestrator for these collectors. Week 13 onward will cover LLM-selected tool calls and workflow coordination.
+The tests use deterministic fixtures. Real network results vary by country, service availability, API permissions and date. The original Week 11 classifier (`src/tender_classifier.py`) remains independent. Week 13 adds a separate OpenRouter model-tool interface (`agent/orchestrator.py`) and bounded read-only tools (`agent/tools_impl.py`). The model now has a tool-call execution path, while automatic verification of every live source is not yet demonstrated. See [Week 13 tool integration](../docs/WEEK13_TOOL_INTEGRATION.md).
 
 ## Privacy, credentials and source verification
 
