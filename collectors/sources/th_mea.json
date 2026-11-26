@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "th_mea",
+  "country_code": "TH",
+  "name": "MEA official procurement public DataTables list",
+  "official_homepage": "https://procurement.mea.or.th",
+  "approved_hosts": [
+    "procurement.mea.or.th"
+  ],
+  "connector_type": "public_html",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://procurement.mea.or.th/Procurement",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://procurement.mea.or.th/Procurement/Search"
+    }
+  ],
+  "notes": "Public anonymous bidder listings and details only. Website explicitly exposes a read-only DataTables search. Cookies stay in memory; no login or challenge bypass. Robot file absent (404)."
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "tr_tredas",
+  "country_code": "TR",
+  "name": "TREDAS public current-tender list",
+  "official_homepage": "https://tredas.com.tr",
+  "approved_hosts": [
+    "tredas.com.tr",
+    "cms.tredas.com.tr"
+  ],
+  "connector_type": "public_html",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://tredas.com.tr/tr/guncel-ihaleler",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://tredas.com.tr/modules/load/bids"
+    }
+  ],
+  "notes": "Scoped public read-only bidder data exposed by the first-party procurement client. No authenticated, account, admin or submission endpoints. Actual private record contents are excluded from git. Robots/published access checked; absence of a robots file is not an authorization wall."
+}

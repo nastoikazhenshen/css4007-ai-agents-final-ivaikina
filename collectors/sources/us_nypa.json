@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "us_nypa",
+  "country_code": "US",
+  "name": "NYPA public open RFQ feed",
+  "official_homepage": "https://rfp.nypa.gov",
+  "approved_hosts": [
+    "rfp.nypa.gov",
+    "api.nypa.gov"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://rfp.nypa.gov/",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 120,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://api.nypa.gov/rfq/v1/api/public/rfq/Bids"
+    }
+  ],
+  "notes": "Scoped public read-only bidder data exposed by the first-party procurement client. No authenticated, account, admin or submission endpoints. Actual private record contents are excluded from git. Robots/published access checked; absence of a robots file is not an authorization wall."
+}

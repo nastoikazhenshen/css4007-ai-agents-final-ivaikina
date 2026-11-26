@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "synthetic-us_nypa",
+  "source_id": "us_nypa",
+  "country_code": "US",
+  "started_at": "2026-11-22T00:00:00Z",
+  "finished_at": "2026-11-22T00:00:00Z",
+  "run_status": "success",
+  "coverage": {
+    "verified_complete": false,
+    "reason": "SYNTHETIC SCHEMA EXAMPLE ONLY, NOT LIVE EVIDENCE",
+    "date_from": null,
+    "date_to": null,
+    "next_cursor": null
+  },
+  "metrics": {
+    "pages_requested": 0,
+    "pages_received": 0,
+    "records_seen": 1,
+    "records_emitted": 1,
+    "errors_count": 0
+  },
+  "http_observations": [],
+  "errors": [],
+  "tenders": [
+    {
+      "source_tender_id": "synthetic-control-only",
+      "country_code": "US",
+      "title_original": "SYNTHETIC CONTROL, NOT A REAL TENDER: Construction overhead line",
+      "description_original": null,
+      "buyer_original": "Synthetic grid buyer",
+      "listing_url": "https://api.nypa.gov/rfq/v1/api/public/rfq/Bids",
+      "tender_url": null,
+      "published_on": null,
+      "deadline_text": null,
+      "raw_status": null,
+      "documents": [],
+      "contact_hints": [],
+      "raw_payload": {
+        "source_record": {
+          "synthetic_fixture": true,
+          "not_live_evidence": true
+        },
+        "contacts": [],
+        "documents": [],
+        "evidence": [],
+        "missing_fields": [
+          "contacts not published in parsed record",
+          "bid deadline not confirmed"
+        ],
+        "url_kind": "official_source_record",
+        "commercial_classification": "candidate; central assessment required",
+        "synthetic_fixture": true,
+        "verification": {
+          "state": "pending_verification",
+          "reason": "Synthetic schema example; no live procurement claim"
+        }
+      },
+      "fetched_at": "2026-11-22T00:00:00Z"
+    }
+  ]
+}

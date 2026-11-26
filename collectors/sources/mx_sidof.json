@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "mx_sidof",
+  "country_code": "MX",
+  "name": "SEGOB SIDOF official gazette procurement notices",
+  "official_homepage": "https://sidof.segob.gob.mx",
+  "approved_hosts": [
+    "sidof.segob.gob.mx"
+  ],
+  "connector_type": "official_api",
+  "automation_permission": "confirmed_permitted",
+  "permission_evidence_url": "https://sidof.segob.gob.mx/datos_abiertos/getPDF/57",
+  "authentication": "none",
+  "enabled": true,
+  "poll_interval_minutes": 240,
+  "endpoints": [
+    {
+      "purpose": "listing",
+      "url": "https://sidof.segob.gob.mx/dof/sidof/notas"
+    },
+    {
+      "purpose": "detail",
+      "url": "https://sidof.segob.gob.mx/dof/sidof/notas/nota"
+    }
+  ],
+  "notes": "Documented official Consultar Notas service returns all three daily editions. Production daily JSON for a recent date was verified against the publication date, not the static 2016 example. Search-form index completeness was unconfirmed and is not used. Gazette publication does not prove current CFE procurement status; keep Pending until independently confirmed. No challenge bypass."
+}
